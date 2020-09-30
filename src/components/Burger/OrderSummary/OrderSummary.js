@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Button from "../../UI/Button/Button";
 
 const OrderSummary = props => {
@@ -12,6 +12,10 @@ const OrderSummary = props => {
                 </li>
             );
         });
+
+    useEffect(() => {
+        console.log("Order Summary Update");
+    })
 
     return (
         <React.Fragment>

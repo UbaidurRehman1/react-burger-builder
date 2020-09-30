@@ -1,12 +1,14 @@
 import React from "react";
 import classes from './Modal.module.css'
 import Backdrop from "../Backdrop/Backdrop";
+import PropTypes from 'prop-types';
 
 const Modal = props => {
+    const show = props.show;
     return (
         <React.Fragment>
             <Backdrop
-                show={props.show}
+                show={show}
                 clickHandler={props.modalClosed}
             />
             <div
@@ -20,6 +22,12 @@ const Modal = props => {
             </div>
         </React.Fragment>
     );
+};
+
+Modal.propTypes = {
+    show: PropTypes.bool.isRequired
 }
 
-export default Modal;
+export default React.memo(Modal, ((prevProps, nextProps) => {
+    return prevProps['show'] === nextProps['show'];
+}));

@@ -1,10 +1,30 @@
-import React from "react";
+import React, {useState} from "react";
 import classes from './Layout.module.css'
+import Toolbar from "../Navigation/Toolbar/Toolbar";
+import SideDrawer from "../Navigation/SideDrawer/SideDrawer";
 
 const Layout = props => {
+
+    const [showSideDrawer, setShowSideDrawer] = useState(true);
+
+    const sideDrawerClosedHandler = () => {
+        setShowSideDrawer(false);
+    }
+
+    const sideDrawerToggleHandler = () => {
+        console.log("Toggle Handler");
+        setShowSideDrawer(!showSideDrawer);
+    }
+
     return (
         <React.Fragment>
-            <div>Toolbar, Side Drawer, Backdrop</div>
+            <Toolbar
+                drawerToggleClicked={sideDrawerToggleHandler}
+            />
+            <SideDrawer
+                open={showSideDrawer}
+                closeHandler={sideDrawerClosedHandler}
+            />
             <main className={classes.Content}>
                 {props.children}
             </main>

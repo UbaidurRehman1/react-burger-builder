@@ -1,8 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Burger from "../components/Burger/Burger";
 import BuildControls from "../components/Burger/BuildControls/BuildControls";
 import Modal from "../components/UI/Model/Modal";
 import OrderSummary from "../components/Burger/OrderSummary/OrderSummary";
+import RequestResolver from "../axios-orders";
+import Spinner from "../components/UI/Spinner/Spinner";
+import ErrorHandler from "../components/hoc/ErrorHandler/ErrorHandler";
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -13,18 +16,26 @@ const INGREDIENT_PRICES = {
 
 const BurgerBuilder = () => {
 
-    let [ingredients, setIngredients] = useState({
-        salad: 0,
-        bacon: 0,
-        cheese: 0,
-        meat: 0
-    });
+    let [ingredients, setIngredients] = useState(null);
 
     let [price, setPrice] = useState(4);
 
     let [purchasable, setPurchasable] = useState(false);
 
     let [purchase, setPurchase] = useState(false);
+
+    const [loading, setLoading] = useState(false);
+
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        RequestResolver.get('https://spring-boot-oauth-27802.firebaseio.com/ingredients')
+            .then(response => {
+                setIngredients(response.data);
+            }).catch(() => {
+            setError(true);
+        });
+    }, [])
 
     const updatePurchaseHandler = ingredients => {
         const sum = Object.keys(ingredients)
@@ -55,7 +66,7 @@ const BurgerBuilder = () => {
     const removeIngredientHandler = type => {
         const oldCount = ingredients[type];
         if (oldCount <= 0)
-            return ;
+            return;
         const updatedCount = oldCount - 1;
         const updatedIngredients = {
             ...ingredients
@@ -77,7 +88,31 @@ const BurgerBuilder = () => {
     }
 
     const purchaseContinueHandler = () => {
-        alert("You Continue");
+        setLoading(true);
+        const order = {
+            ingredients,
+            price,
+            customer: {
+                name: 'Ubaid',
+                address: {
+                    street: 'Lahore ki gali',
+                    zipCode: '444000',
+                    country: 'Pakistan'
+                },
+                email: 'test@test.com'
+            },
+            deliveryMethod: 'fastest'
+        }
+        RequestResolver.post('/orders.json', order)
+            .then((response) => {
+                setLoading(false);
+                setPurchase(false);
+                console.log(response);
+            }).catch((error) => {
+            setLoading(false);
+            setPurchase(false);
+            console.log(error);
+        });
     }
 
     const disabledInfo = {
@@ -87,31 +122,55 @@ const BurgerBuilder = () => {
         disabledInfo[key] = disabledInfo[key] <= 0;
     }
 
+    let orderSummaryView = null;
+
+
+    let burgerAndBuilderView = error ? <p>Ingredient can't be loaded</p> : <Spinner/>;
+
+    if (ingredients) {
+        orderSummaryView = (
+            <OrderSummary
+                ingredients={ingredients}
+                purchaseCancelled={purchaseCancelHandler}
+                purchaseContinued={purchaseContinueHandler}
+                price={price}
+            />
+        );
+
+        burgerAndBuilderView = (
+            <React.Fragment>
+                <Burger
+                    ingredients={ingredients}
+                />
+                <BuildControls
+                    addIngredientHandler={addIngredientHandler}
+                    removeIngredientHandler={removeIngredientHandler}
+                    disabledInfo={disabledInfo}
+                    price={price}
+                    purchasable={purchasable}
+                    purchaseHandler={purchaseHandler}
+                />
+            </React.Fragment>
+        );
+    }
+
+    if (loading) {
+        orderSummaryView = (
+            <Spinner/>
+        );
+    }
+
     return (
         <React.Fragment>
             <Modal
                 show={purchase}
+                loading={loading}
                 modalClosed={purchaseCancelHandler}>
-                <OrderSummary
-                    ingredients={ingredients}
-                    purchaseCancelled={purchaseCancelHandler}
-                    purchaseContinued={purchaseContinueHandler}
-                    price={price}
-                />
+                {orderSummaryView}
             </Modal>
-            <Burger
-                ingredients={ingredients}
-            />
-            <BuildControls
-                addIngredientHandler={addIngredientHandler}
-                removeIngredientHandler={removeIngredientHandler}
-                disabledInfo={disabledInfo}
-                price={price}
-                purchasable={purchasable}
-                purchaseHandler={purchaseHandler}
-            />
+            {burgerAndBuilderView}
         </React.Fragment>
     );
 }
 
-export default BurgerBuilder;
+export default ErrorHandler(BurgerBuilder, RequestResolver);

@@ -1,7 +1,6 @@
 import React from "react";
 import classes from './Modal.module.css'
 import Backdrop from "../Backdrop/Backdrop";
-import PropTypes from 'prop-types';
 
 const Modal = props => {
     const show = props.show;
@@ -24,10 +23,6 @@ const Modal = props => {
     );
 };
 
-Modal.propTypes = {
-    show: PropTypes.bool.isRequired
-}
-
 export default React.memo(Modal, ((prevProps, nextProps) => {
-    return prevProps['show'] === nextProps['show'];
+    return prevProps['show'] === nextProps['show'] && prevProps['loading'] === nextProps['loading'];
 }));

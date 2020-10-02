@@ -5,7 +5,12 @@ const Button = props => {
     return (
         <button
             className={[classes.Button, classes[props.btnType]].join(' ')}
-            onClick={props.clicked}
+            onClick={(event) => {
+                if (props.preventDefaultBehavior) {
+                    event.preventDefault();
+                }
+                props.clicked();
+            }}
         >
             {props.children}
         </button>

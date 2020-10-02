@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import Burger from "../components/Burger/Burger";
-import BuildControls from "../components/Burger/BuildControls/BuildControls";
-import Modal from "../components/UI/Model/Modal";
-import OrderSummary from "../components/Burger/OrderSummary/OrderSummary";
-import RequestResolver from "../axios-orders";
-import Spinner from "../components/UI/Spinner/Spinner";
-import ErrorHandler from "../components/hoc/ErrorHandler/ErrorHandler";
+import Burger from "../../components/Burger/Burger";
+import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import Modal from "../../components/UI/Model/Modal";
+import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
+import RequestResolver from "../../axios-orders";
+import Spinner from "../../components/UI/Spinner/Spinner";
+import ErrorHandler from "../../components/hoc/ErrorHandler/ErrorHandler";
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -14,7 +14,7 @@ const INGREDIENT_PRICES = {
     bacon: 0.7
 }
 
-const BurgerBuilder = () => {
+const BurgerBuilder = props => {
 
     let [ingredients, setIngredients] = useState(null);
 
@@ -29,7 +29,7 @@ const BurgerBuilder = () => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        RequestResolver.get('https://spring-boot-oauth-27802.firebaseio.com/ingredients')
+        RequestResolver.get('https://spring-boot-oauth-27802.firebaseio.com/ingredients.json')
             .then(response => {
                 setIngredients(response.data);
             }).catch(() => {
@@ -89,29 +89,17 @@ const BurgerBuilder = () => {
 
     const purchaseContinueHandler = () => {
         setLoading(true);
-        const order = {
-            ingredients,
-            price,
-            customer: {
-                name: 'Ubaid',
-                address: {
-                    street: 'Lahore ki gali',
-                    zipCode: '444000',
-                    country: 'Pakistan'
-                },
-                email: 'test@test.com'
-            },
-            deliveryMethod: 'fastest'
+        const queryParams = [];
+        for (let i in ingredients) {
+            if (ingredients.hasOwnProperty(i)) {
+                queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(ingredients[i]))
+            }
         }
-        RequestResolver.post('/orders.json', order)
-            .then((response) => {
-                setLoading(false);
-                setPurchase(false);
-                console.log(response);
-            }).catch((error) => {
-            setLoading(false);
-            setPurchase(false);
-            console.log(error);
+        queryParams.push('price=' + price);
+        const queryString = queryParams.join('&');
+        props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
         });
     }
 
@@ -119,7 +107,9 @@ const BurgerBuilder = () => {
         ...ingredients
     }
     for (let key in disabledInfo) {
-        disabledInfo[key] = disabledInfo[key] <= 0;
+        if (disabledInfo.hasOwnProperty(key)) {
+            disabledInfo[key] = disabledInfo[key] <= 0;
+        }
     }
 
     let orderSummaryView = null;

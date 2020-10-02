@@ -6,12 +6,14 @@ const Burger = props => {
 
     let ingredients = Object.keys(props.ingredients)
         .map(ingredientKey => {
-           return [...Array(props.ingredients[ingredientKey])].map((_, i) => {
+            const numberOfIngredients = +props.ingredients[ingredientKey];
+           return [...Array(numberOfIngredients)].map((_, i) => {
                return <BurgerIngredient key={ingredientKey + i} type={ingredientKey} />
            })
         }).reduce((previousValue, currentValue) => {
              return previousValue.concat(currentValue);
         });
+    console.log(ingredients);
     if (ingredients.length === 0) {
         ingredients = <p>Please Add Ingredients to build Burger</p>
     }

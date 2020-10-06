@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import Modal from "../../UI/Model/Modal";
+import Modal from "../../components/UI/Model/Modal";
 
 const ErrorHandler = (WrappedComponents, RequestResolver) => {
 

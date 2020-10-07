@@ -14,7 +14,6 @@ const OrderSummary = props => {
         });
 
     useEffect(() => {
-        console.log("Order Summary Update");
     })
 
     return (

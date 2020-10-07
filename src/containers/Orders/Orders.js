@@ -10,7 +10,6 @@ const Orders = props => {
 
 
     useEffect(() => {
-        console.log(props);
         props.onFetchOrders(props.token, props.userId);
     }, []);
 

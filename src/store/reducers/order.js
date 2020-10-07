@@ -6,7 +6,7 @@ import
     FETCH_ORDERS_INIT,
     FETCH_ORDER_SUCCESS,
     FETCh_ORDER_FAIL} from "../actions/ActionTypes";
-import {updateObject} from '../utility'
+import {updateObject} from '../../shared/utility'
 
 const initialState = {
     orders: [],

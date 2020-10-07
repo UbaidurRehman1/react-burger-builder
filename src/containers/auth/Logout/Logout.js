@@ -6,7 +6,6 @@ import {connect} from 'react-redux'
 
 const Logout = props => {
     useEffect(() => {
-        console.log("Logging Out");
         props.onLogout();
     }, [])
 

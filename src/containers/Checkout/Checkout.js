@@ -11,8 +11,6 @@ const Checkout = props => {
     }
 
     const checkoutContinued = () => {
-        console.log("You clicked on continue");
-        console.log(props.ingredients);
         props.history.push('/checkout/contact-data');
     }
 

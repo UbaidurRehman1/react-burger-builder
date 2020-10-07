@@ -25,13 +25,10 @@ export const purchaseBurgerStart = () => {
 export const purchaseBurger = (orderData, token) => {
     return dispatch => {
         dispatch(purchaseBurgerStart())
-        console.log(orderData);
         RequestResolver.post('/orders.json?auth=' + token, orderData)
             .then((response) => {
-                console.log(response);
                 dispatch(purchaseBurgerSuccess(response.data.name, orderData));
             }).catch((error) => {
-                console.log(error);
                 dispatch(purchaseBurgerFail(error));
         });
     }
@@ -69,7 +66,6 @@ export const fetchOrders = (token, userId) => {
         const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
         RequestResolver.get('/orders.json' + queryParams)
             .then((response) => {
-                console.log(response.data);
                 const orders = [];
                 const data = response.data;
                 for (let key in data) {

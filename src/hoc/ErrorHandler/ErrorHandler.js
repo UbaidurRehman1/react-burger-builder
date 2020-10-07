@@ -11,11 +11,9 @@ const ErrorHandler = (WrappedComponents, RequestResolver) => {
         useEffect(() => {
             const reqInterceptor = RequestResolver.interceptors.request.use(req => req, () => {
                 setError('');
-                console.log("Error on Request and error ", error)
             });
             const resInterceptor = RequestResolver.interceptors.response.use(res => res, () => {
                 setError('There is an Error');
-                console.log("Error on Response and error ", error)
             });
             return () => {
                 RequestResolver.interceptors.request.eject(reqInterceptor);
@@ -39,7 +37,6 @@ const ErrorHandler = (WrappedComponents, RequestResolver) => {
             </React.Fragment>
         );
     }
-    console.log();
     return Handler;
 }
 

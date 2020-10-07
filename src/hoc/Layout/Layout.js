@@ -13,7 +13,6 @@ const Layout = props => {
     }
 
     const sideDrawerToggleHandler = () => {
-        console.log("Toggle Handler");
         setShowSideDrawer(!showSideDrawer);
     }
 

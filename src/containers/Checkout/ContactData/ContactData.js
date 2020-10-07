@@ -8,6 +8,8 @@ import Input from "../../../components/UI/Input/Input";
 import {connect} from 'react-redux';
 import {purchaseBurger} from '../../../store/actions/index'
 import ErrorHandler from "../../../hoc/ErrorHandler/ErrorHandler";
+import {updateObject} from "../../../shared/utility";
+import {checkValidity} from "../../../shared/utility";
 
 const ContactData = props => {
     const [isFormValid, setFormValidity] = useState(false);
@@ -105,28 +107,24 @@ const ContactData = props => {
 
     const inputHandler = (value, elementIdentifier) => {
 
-        const updatedForm = {
-            ...form
-        }
+        const updateFormElement = updateObject(form[elementIdentifier], {
+            value: value,
+            valid: checkValidity(value, form[elementIdentifier].validation),
+            touched: true
+        })
 
-        const updateFormElement = {
-            ...updatedForm[elementIdentifier]
-        }
-
-        updateFormElement.value = value;
-        updateFormElement.valid = checkValidity(updateFormElement.value, updateFormElement.validation)
-        updateFormElement.touched = true;
-        updatedForm[elementIdentifier]  = updateFormElement;
+        const updatedForm = updateObject(form, {
+            [elementIdentifier]: updateFormElement
+        })
 
         let isFormValid = true;
         for (let inputIdentifier in updatedForm) {
             isFormValid = isFormValid && updatedForm[inputIdentifier].valid;
         }
         if (isFormValid === undefined) {
-            console.log(updateFormElement);
+
         }
 
-        console.log('IsFormValid: ', isFormValid);
         setFormValidity(isFormValid);
         setForm(updatedForm);
     }
@@ -138,7 +136,6 @@ const ContactData = props => {
         for (let formElementIdentifier in form) {
             formData[formElementIdentifier] = form[formElementIdentifier].value;
         }
-        console.log(formData);
         const order = {
             ingredients: {...props.ingredients},
             price: props.price,
@@ -146,21 +143,6 @@ const ContactData = props => {
             userId: props.userId
         }
         props.onOrderBurger(order, props.token);
-        console.log(props.ingredients);
-    }
-
-    const checkValidity = (value, rules) => {
-        let isValid = true;
-        if (rules.required) {
-            isValid = value.trim() !== '';
-        }
-        if (isValid && rules.minLength) {
-            isValid = value.trim().length >= rules.minLength;
-        }
-        if (isValid && rules.maxLength) {
-            isValid = value.trim().length <= rules.maxLength;
-        }
-        return isValid;
     }
 
     const formElementArray = [];

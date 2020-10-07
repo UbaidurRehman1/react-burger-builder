@@ -63,7 +63,6 @@ const BurgerBuilder = props => {
 
     let burgerAndBuilderView = props.error ? <p>Ingredient can't be loaded</p> : <Spinner/>;
 
-    console.log(props.ingredients);
     if (props.ingredients) {
         orderSummaryView = (
             <OrderSummary

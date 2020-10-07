@@ -20,9 +20,16 @@ const rootReducer = combineReducers(
     }
 );
 
-const store = createStore(rootReducer,  composeWithDevTools(
-    applyMiddleware(thunk)
-));
+const env = process.env.NODE_ENV === 'development'
+
+let store;
+if (env) {
+    store = createStore(rootReducer,  composeWithDevTools(
+        applyMiddleware(thunk)
+    ));
+} else {
+    store = createStore(rootReducer, applyMiddleware(thunk));
+}
 
 ReactDOM.render(
     <Provider store={store}>

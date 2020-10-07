@@ -5,16 +5,16 @@ const ErrorHandler = (WrappedComponents, RequestResolver) => {
 
     const Handler = (props) => {
 
-        const [error, setError] = useState(false);
+        const [error, setError] = useState('');
 
         //todo State is not updating in axios interceptors
         useEffect(() => {
             const reqInterceptor = RequestResolver.interceptors.request.use(req => req, () => {
-                setError(false);
+                setError('');
                 console.log("Error on Request and error ", error)
             });
             const resInterceptor = RequestResolver.interceptors.response.use(res => res, () => {
-                setError(true);
+                setError('There is an Error');
                 console.log("Error on Response and error ", error)
             });
             return () => {
@@ -24,7 +24,7 @@ const ErrorHandler = (WrappedComponents, RequestResolver) => {
         });
 
         const errorConfirmedHandler = () => {
-            setError(false);
+            setError('');
         }
 
         return (

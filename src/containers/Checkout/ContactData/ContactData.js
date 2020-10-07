@@ -142,9 +142,10 @@ const ContactData = props => {
         const order = {
             ingredients: {...props.ingredients},
             price: props.price,
-            orderData: {...formData}
+            orderData: {...formData},
+            userId: props.userId
         }
-        props.onOrderBurger(order);
+        props.onOrderBurger(order, props.token);
         console.log(props.ingredients);
     }
 
@@ -206,13 +207,15 @@ const mapStateToProps = state => {
     return {
         ingredients: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.price,
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userId
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onOrderBurger: (orderData) => dispatch(purchaseBurger(orderData))
+        onOrderBurger: (orderData, token) => dispatch(purchaseBurger(orderData, token))
     }
 }
 

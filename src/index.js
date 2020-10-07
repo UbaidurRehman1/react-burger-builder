@@ -9,12 +9,14 @@ import {Provider} from 'react-redux';
 import BurgerBuilderReducer from "./store/reducers/BurgerBuilder";
 import OrderReducer from "./store/reducers/order";
 import { composeWithDevTools } from 'redux-devtools-extension';
+import AuthReducer from "./store/reducers/auth";
 import thunk from "redux-thunk";
 
 const rootReducer = combineReducers(
     {
         burgerBuilder: BurgerBuilderReducer,
-        order: OrderReducer
+        order: OrderReducer,
+        auth: AuthReducer
     }
 );
 

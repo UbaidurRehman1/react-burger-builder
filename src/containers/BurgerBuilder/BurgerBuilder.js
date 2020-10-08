@@ -10,7 +10,7 @@ import {connect} from "react-redux";
 import * as actionTypes from '../../store/actions/index'
 
 
-const BurgerBuilder = props => {
+export const BurgerBuilder = props => {
 
     let [purchase, setPurchase] = useState(false);
 
